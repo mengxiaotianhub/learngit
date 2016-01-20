@@ -3,3 +3,5 @@ hub:使用git config --local -e命令可以打开配置信息。
 git checkout -b "branchname":相当于git branch "branchname" 和 git checkout "branchname"，用于创建一个分支并切换到此分支
 git branch :查看当前所有分支
 git merge "branchname":将指定分支合并到当前分支
+git branch -d <name>:删除指定的分支，删除未合并的分支会报错，需要再次输入命令并将d改为大写D
+git log --graph --pretty=oneline --abbrev-commit :查看分支合并历史
