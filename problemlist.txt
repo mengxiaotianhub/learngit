@@ -1,0 +1,4 @@
+hub：在使用ssh链接远程库的时候出现“Host key verification failed.”错误，一般情况是第一次连接的时候许可没有输入yes，直接回车导致的。
+hub:使用git config --local -e命令可以打开配置信息。
+git checkout -b "branchname":相当于git branch "branchname" 和 git checkout "branchname"，用于创建一个分支并切换到此分支
+git branch :查看当前所有分支
