@@ -1,0 +1,22 @@
+servlet一般的执行顺序
+1、容器通过配置文件找到url想要访问的servlet类
+2、servlet里的servlet函数按请求方法分配给不同的方法处理，例如gei请求就分配给doGet方法。
+3、相应的方法对请求处理了以后返回响应由容器送回客户端。
+
+servletconfing：一个servlet类的配置信息
+servletcontext:可以全局共享的servlet配置信息，获得一个servlet类的示例如下：
+ServletContext ctx = this.getServletContext();
+
+ServletContxt读取外部的配置信息可以从getResoure,getResoureAsStream,getRealPath三个方法获取
+
+getResoure是返回url，示例如下：
+URL url = ctx.getResoure("/WEB-INF/calsses/log4j.properties"); 括号里的是外部文件相对于webapp的路径
+InputStream in = url.openStream();
+
+getResoureAsStream返回是Stream，不用像getResoure再做转换，示例如下：
+InputStream in = ctx.getResoureAsStream("/WEB-INF/calsses/log4j.properties");
+
+getRealPath是获取文件的绝对地址，之后通过File类进行转化为Stream,示例如下：
+String path = ctx.getRealPath("/WEB-INF/calsses/log4j.properties");
+File f = new File(path);
+InputStream in = new FileInputStream(f);
