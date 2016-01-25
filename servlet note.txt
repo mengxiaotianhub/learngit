@@ -1,8 +1,9 @@
-servlet一般的执行顺序
+<servlet一般的执行顺序>
 1、容器通过配置文件找到url想要访问的servlet类
 2、servlet里的servlet函数按请求方法分配给不同的方法处理，例如gei请求就分配给doGet方法。
 3、相应的方法对请求处理了以后返回响应由容器送回客户端。
 
+<servletconfing和servletcontext:>
 servletconfing：一个servlet类的配置信息
 servletcontext:可以全局共享的servlet配置信息，获得一个servlet类的示例如下：
 ServletContext ctx = this.getServletContext();
@@ -20,3 +21,43 @@ getRealPath是获取文件的绝对地址，之后通过File类进行转化为St
 String path = ctx.getRealPath("/WEB-INF/calsses/log4j.properties");
 File f = new File(path);
 InputStream in = new FileInputStream(f);
+
+<web应用程序结构>
+webapp
+  丨——css
+  丨——js
+  丨——images
+  丨——html
+  丨——META-INF
+  丨——WEB-INF
+      丨——classes
+      丨——lib
+ 公共资源：用户通过url可以直接访问到的一些静态资源，包括css,js,images,html。
+ META-INF：定义了jar包的源信息，包括包扩展属性，类加载定义等。
+ WEB-INF：类文件和类依赖库，用户一般不能直接访问。classes，编写的代码。lib,依赖的jar包。以及web.xml配置文件。
+
+ <web.xml 部署描述符>
+ web.xml：设置web应用程序的组件部署信息，Servlet容器需要支持所有的描述元素。
+
+ Servlet声明：
+ servlet标签：包含servlet-name和servlet-class(servlet文件在classes目录下的实际路径)。
+ servlet-mapping标签：包含servlet-name和url-pattern(通过url访问时候的相对路径)两个元素。支持多个url对应一个servlet。可以用*来做模糊匹配。
+ servletMapping的匹配规则：按优先级为-->1、精确路径匹配，完全匹配。-->2、最长路径匹配，最长前缀匹配-->3、扩展名匹配-->4、default servlet或者报错
+
+ ServletConfing：
+ 单个servlet信息，写在servlet标签下，以<init-param>开头，包含两个元素<param-name>与<param-value>。
+
+ ServletContext；
+ 全局信息，与servlet处于同一层的标签，包含两个元素<param-name>与<param-value>。
+
+ load-on-startup:
+ 控制servlet初始化时间的元素，写在servlet标签下，大于等于0的时候会使得当前servlet在容器启动时加载。否则为在使用sevlet时加载，在有多个servlet都设置此值时，正数值越小启动优先级越高。
+
+ error-page:
+ 自定义错误页面的标签，包含三个元素<error-code>、<location>(指定的跳转页面)和<exception-type>（通过捕捉java的异常错误来重定向页面）
+
+ welcome-file-list:
+ 欢迎页面设置标签，当url指向项目路径而不是具体的servlet路径是会默认加载欢迎页面。<welcome-file-list>下可以设置多个<welcme-file>，加载时按顺序加载。
+
+ MIME类型映射:
+ 主要用来定义文件类型，由<minme-mapping>这个标签定义扩展文件名映射类型，包含<extension>(文件扩展名)和<mime-type>(mime标准，在RFC标准中去搜索)两个子元素。
