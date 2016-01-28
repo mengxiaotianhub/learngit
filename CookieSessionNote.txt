@@ -1,7 +1,11 @@
 会话：客户端与服务器建立TCP连接后，完成数次HTTP连接后，直到断开连接称为一次会话。
 会话的使用场景：偏好记录、自动登录、浏览记录。
 会话数据的保存方式：Cookie(把数据保存在客户端)，session(把数据保存在服务器端)。
-Cookie：保存在客户端的key-value形式的数据。默认生命周期是会话结束后失效。也可以通过setMaxAge设置Cookie的有效期。
-Cookie的缺点：大小和数量有限制，一个站点一般只能保存20个Cookie,并且大小保持在4K以内。数据安全性问题，Cookie是明文传递的。
 
-Session：保存在服务器端，这里主要讲的是HttpSession。
+<Cookie>
+Cookie：保存在客户端的key-value形式的数据。默认生命周期是会话结束后失效，成为会话Cookie。也可以通过setMaxAge设置Cookie的有效期。有效期是累计计时的。
+Cookie的缺点：大小和数量有限制，一个站点一般只能保存20个Cookie,并且大小保持在4K以内。数据安全性问题，Cookie是明文传递的。可以使用F12查看Cookie
+
+<Session>
+Session：保存在服务器端，这里主要讲的是HttpSession。默认保存时间为30分钟，可以通过setMaxInactiveInterval或者部署描述符的方式设置有效期。同时也可以通过invalidate接口使得Session失效。有效期是间隔时间。
+Session有效期在web.xml文件中session-config元素下的session-timeout子元素下设置(单位与在api中不同是分钟)。
