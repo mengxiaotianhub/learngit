@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8">
+<JAVA_OPTS 环境变量 告诉jvm这是一个服务器程序>
+	<-server> 告诉jvm这是一个服务器</-server>
+	<-Xms512m –Xmx512m> 设置初始启动堆内存和最大堆内存</-Xms512m –Xmx512m>
+</JAVA_OPTS>
+<Server 结构>
+	<Server>
+		<Service>
+			<Connector>
+			</Connector>
+			<Engine>
+				<Host>
+					<Conext></Conext>
+				</Host>
+			</Engine>
+		</Service>
+	</Server>
+</Server 结构>
+
+<Connector>
+	<Coyote>
+	<默认BIO Connector>
+</Connector>
+
+<Container>
+	<catalina/>
+	<servlet 课程/>
+</Container>
+
+<Connector 参数配置>
+	<port>端口号</port>
+	<address>指定监听的地址</address>
+	<protol>版本号</protol>
+	<connectionTimeout>链接最长持续时间</connectionTimeout>
+	<acceptCout>最大排队长度，default 100</acceptCout>
+	<maxConnections>最大同时链接</maxConnections>
+	<minSpareThreads>最小空闲线程数</,minSpareThreads>
+</Connector>
+
+<Executor 线程池配置>
+	<minSpareThreads></minSpareThreads>
+	<maxConnections></maxConnections>
+</Executor>
+
+<Connector>
+	<1>指定配置的线程池</1>
+	<2>直接指定线程池配置参数</2>
+</Connector>
+
+<日志的作用>
+	<Tomcat 运行状况的获知/>
+	<调试利器/>
+<日志的作用/>
+<日志的分类>
+	<系统运行日志/>
+	<访问日志>配置文件是server.xml</访问日志>
+	<应用日志/>
+<日志的分类/>
+
+<server.xml>
+	<valve>
+		<pattern>
+			<%m>method<%m>
+			<%a>client ip</%a>
+			<%t>Time</%t>
+			<%r>请求行</%r>
+			<%s>statusCode</%s>
+			<%b>byteSent</%b>
+			<%{User-Agent}i>User-Agent</%{User-Agent}>
+		</pattern>
+		<fileDateFormat>&quot;yyyy-mm-dd.&quot;</fileDateFormat>
+		<rotatable>&quot;true&quot;<rotatable>
+	</valve>
+<server.xml>
+
+<war 包>
+	<jar cvf restuarant .>将restuarant当前目录的打包</jar cvf restuarant .>
+<war 包>

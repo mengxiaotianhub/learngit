@@ -1,0 +1,12 @@
+与数据库的连接工具：
+Workbench:图形化交互
+Client Side:命令行
+JDBC:java程序和MYSQL链接的工具
+
+
+JDBC链接数据库步骤：
+1、class.forname()  注册一个驱动名称给DriverManager
+2、conn = DriverManager.getConnection(DB_URL,USER,PASS);  DB_URL(以MYSQL为例):jdbc:mysql://localhost:3306/cloud_study;
+3、
+4、ResultSet = stmt.excuteQuery("select userName from user");ResultSet是一个集合，可以执行的方法有，.next()指针指向下一行,.previous()指针指向上一行,.absolute()指针指向指定序号行,.beforeFirst,指针指向第一行以前.afterLast()指针指向最后一行以后;.getString(ColumnName/index),.getInt(c/i),.getObject(c/i),一般推荐使用列名作为定位。
+c/i

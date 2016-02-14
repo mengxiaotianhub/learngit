@@ -1,0 +1,29 @@
+Mysql使用步骤：
+1、登录
+2、使用USE+“数据库名”命令打开所需要查看的数据库
+3、SHOW DATABASE命令可用来显示所有的数据库列表，SHOW TABLES显示当前数据库的列表；使用HELP SHOW来显示允许的SHOW语句
+4、SELECT语句用来从表中检索数据列，一般格式为SELECT 列名 FROM 表名，在表名前加DISTINCT关键字可以得出不重复列
+5、LIMIT 5，5表示检索从第5行后显示5行
+6、ORDER BY根据需要排序检索结果，跟在form子句后面，一般格式为 ORFER BY + 列名，表示按这个列的字母顺序排列检索结果，可按照未显示列排序。可以加DESC进行降序排序，格式为ORDER BY + 列名 + DESC
+7、WHERE语句用来过滤数据，一般格式为，WHERE prod_name = 2.5;除一般逻辑判断语句外，还可以通过between限定位于某两个值之间，一般比较字符串时使用单引号，其他时候可以不用引号.WHERE语句中存在计算顺序，一般是AND优先于OR。
+8、IN操作符，WHERE语句中用来确定多个取值范围的语句：例如
+SELECT prod_name,prod_price
+FROM products
+WHERE vend_id IN (1002,1003)
+ORDER BY prod_name;
+9、NOT 操作符对其后的条件取反
+10、通配符，某些特殊字符用来做模糊搜索。需要跟在LIKE后，例如：
+WHERE prod_name LIKE 'jet%'表示搜索所有开头为jet的词。其中%表示任意个任意字符，_表示一个任意字符，
+11、正则表达式需要将LIKE的位置换为REGEXP，若需要区分大小写需要使用BINARY关键字在REGEXP之后。、
+12、在正则表达式中;. 相当于通配符_ ;|相当于OR;[]用来表示特定位置的字符集合；^相当于 NOT
+13、匹配特殊字符本身需要使用\\做前导来进行转义，一般正则表达式使解释结实另一个。
+14、计算字段，将两个列拼接为一个值时候使用Concat()函数，其中的固定格式输出使用''引起来，RTrim()函数可以去掉数据两边的空格。使用AS关键字给计算结果赋予别名，以让应用程序引用。计算字段同时可用于数据之间的计算，使用列名代替数据列入计算式，同时使用AS赋予别名以让其顺利引用。NOW()函数可以返回当前时间和日期。Upper()函数将字母都变成为大写。soundex()函数是用来比较近音词的。
+15、其他的操作符语句，insert,插入,INSERT LOW_PRIORITY可以低优先级插入以改善性能。update，更新，UPDATE IGNORE可以忽略错误更新。delete，删除(注意delete只能删除整行，若只想删除单独的列使用update语句)。
+16、使用CREATE TABLE 表名
+(vend_id	int    NOT NULL AUTO_INCREMRNT,
+ vend_name  char(50) NOT NULL,
+ vend_address char(50) null,
+ PRIMARY KEY(vend_id)
+)ENGINE=InnoDB;
+17、使用ALTER TABLE语句对表进行更新，例如ADD增加列，ADD constraint fk_orderitems_orders FOREIGN KEY (prod_id) REFERENCES customers (vend_id)是增加外键;DROP TABLE删除表；RENAME TABLE XX TO XXX重命名表;
+18、使用CREATE VIEW XXX AS 来创建视图，使用SHOW CREATE VIEW来查看创建视图的语句，使用DROP VIEW来删除视图，使用CREATE OR REPLACE VIEW 来更新视图。
