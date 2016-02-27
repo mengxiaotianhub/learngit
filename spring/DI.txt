@@ -1,0 +1,108 @@
+循环引用在
+使用ioc的di的优点：
+动态替换依赖，程序更灵活；面向接口编程，程序更清晰；实践优先使用对象组合而不是类继承；代码结构更清晰；
+从本质上来说设计一个好的依赖逻辑才是关键，如果设计本身都没有依赖，那么ioc就没有可以注入的东西了。
+依赖注入的基本方式：
+构造器注入，就是说在实例化的时候通过在bean中配置依赖参数来实现注入，构造函数和动态工厂支持构造器注入，静态工厂不支持。
+setter注入，通过setter方法进行依赖注入。
+方法注入，用过替换点bean的方法来实现注入。
+
+通过构造器注入的三种方式：
+通过参数索引注入：
+<constructor-arg index="0" value="hello">
+通过类型注入（除基本类型外需要全部使用全限定名）：
+<constructor-arg type="java.lang.String" value="hello">
+通过参数名注入(需要在编译的时候打开调试模式，获取到变量名信息才可以"javac -g:vars")：
+<constructor-arg name="name" value="hello">
+通过静态工厂构造器注入：
+<bean id="byIndex"  
+class="cn.javass.spring.chapter3.DependencyInjectByStaticFactory" factory-method="newInstance">  
+<constructor-arg index="0" value="Hello World!"/>  
+<constructor-arg index="1" value="1"/>  
+</bean>  
+通过动态工厂构造器注入:
+<bean id="instanceFactory"  
+class="cn.javass.spring.chapter3.DependencyInjectByInstanceFactory"/>  
+   
+<bean id="byIndex"  
+factory-bean="instanceFactory"  factory-method="newInstance">  
+    <constructor-arg index="0" value="Hello World!"/>  
+       <constructor-arg index="1" value="1"/>  
+
+通过setter方法注入：
+<!-- 通过setter方式进行依赖注入 -->  
+    <bean id="bean" class="cn.javass.spring.chapter3.HelloImpl4">  
+        <property name="message" value="Hello World!"/>  
+        <property name="index">  
+            <value>1</value>  
+        </property>  
+    </bean>  
+
+注入常量：
+<property name="message" value="Hello World!"/>  
+或  
+<property name="index"><value>1</value></property><span class="Apple-style-span" style="font-size: 14px; white-space: normal; background-color: #ffffff;"> </span>  
+这里的值都为String,由IOC容器进行具体的数据类型转换，其中 true/false也可以由yes/no,on/off,1/0来代表。
+
+注入bean id :
+<property name="id"><idref bean="bean1"/></property>  <property name="id"><idref bean="bean1"/></property>  
+相当于
+<bean id="idrefBean1" class="……">  
+<property name="id" value ="bean1"/>  
+</bean>  
+
+注入集合(list,set等相应的把list标签改成set等就好了)，value-type指定注入的参数属性，不指定默认String,merge用于父子bean是否合并list条目。
+<bean id="listBean" class="cn.javass.spring.chapter3.bean.ListTestBean">  
+    <property name="values">  
+        <list value-type="java.lang.String" merge="default">  
+            <value>1</value>  
+            <value>2</value>  
+            <value>3</value>  
+        </list>  
+   </property>  
+</bean>  
+
+注入数组(arraylist):
+一维数组和上面方式一样，二维数组要加array标签：
+<arraylist value-type="java.lang.String" merge="default">  
+			<array>
+				<array>	
+            	<value>1</value>  
+            	<value>2</value>  
+            	</array>
+            </array>
+            <array>
+            	<array>
+            	<value>3</value> 
+            	</array>
+            </array> 
+</arraylist>  
+
+注入字典：
+ <map key-type="int" value-type="java.lang.String" merge="default">  
+            <entry key="" value="">  
+</map>  
+
+注入properties(键值都为String)
+ <props value-type="java.lang.String" merge="default">  
+            <prop value="">1</value>  
+            <prop value="">2</value>  
+            <prop value="">3</value>  
+</list props>  
+
+通过配置文件的方式注入properties:
+<bean id="header" class=""> 
+            <constructor-org name="color" value="${color}"></constructor-org>
+            <constructor-org name="size" value="${size}"></constructor-org>
+</bean>
+<bean id="headerProperties" class="">
+			<propertis name="location" value="classpath:">
+</bean>
+
+注入bean:
+构造器：
+<constructor-arg index="0" ref="bean">
+<bean id="bean" class="">
+属性注入：
+ <property name="index">  <value>1</value>  (常量);
+  <property name="index">  <ref bean="bean"/>(bean);

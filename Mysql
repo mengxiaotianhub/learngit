@@ -18,9 +18,9 @@ WHERE prod_name LIKE 'jet%'表示搜索所有开头为jet的词。其中%表示�
 12、在正则表达式中;. 相当于通配符_ ;|相当于OR;[]用来表示特定位置的字符集合；^相当于 NOT
 13、匹配特殊字符本身需要使用\\做前导来进行转义，一般正则表达式使解释结实另一个。
 14、计算字段，将两个列拼接为一个值时候使用Concat()函数，其中的固定格式输出使用''引起来，RTrim()函数可以去掉数据两边的空格。使用AS关键字给计算结果赋予别名，以让应用程序引用。计算字段同时可用于数据之间的计算，使用列名代替数据列入计算式，同时使用AS赋予别名以让其顺利引用。NOW()函数可以返回当前时间和日期。Upper()函数将字母都变成为大写。soundex()函数是用来比较近音词的。
-15、其他的操作符语句，insert,插入,INSERT LOW_PRIORITY可以低优先级插入以改善性能。update，更新，UPDATE IGNORE可以忽略错误更新。delete，删除(注意delete只能删除整行，若只想删除单独的列使用update语句)。
+15、其他的操作符语句，insert into,插入,INSERT LOW_PRIORITY可以低优先级插入以改善性能。update，更新，UPDATE IGNORE可以忽略错误更新。delete，删除(注意delete只能删除整行，若只想删除单独的列使用update语句)。
 16、使用CREATE TABLE 表名
-(vend_id	int    NOT NULL AUTO_INCREMRNT,
+(vend_id	int    NOT NULL AUTO_INCREMENT,
  vend_name  char(50) NOT NULL,
  vend_address char(50) null,
  PRIMARY KEY(vend_id)

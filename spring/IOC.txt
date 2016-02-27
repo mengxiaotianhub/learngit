@@ -1,0 +1,55 @@
+IOC的核心是一个管理依赖注入的容器，其实例化例子是BeanFactory，AppilcationContext是BeanFactory继承类，实现了更多的功能，他也可以进一步被继承比如WebApplicationContext;
+
+Bean是IOC管理的对象，通过xml文件配置，而这个文件在BeanFactory被创建的时候加载。
+例如一个bean的配置文件如下
+<beans>  
+    <import resource=”resource1.xml”/>  
+    <bean id=”bean1”class=””></bean>  
+    <bean id=”bean2”class=””></bean>  
+<bean name=”bean2”class=””></bean>  
+    <alias alias="bean3" name="bean2"/>  
+    <import resource=”resource2.xml”/>  
+</beans>  
+其中import导入的是其他的配置文件。 id是bean的标识符,name和alias都是别名（无论是id 还是别名都需要在ioc容器中唯一）,class是bean的类路径。
+
+bean的实例化方式:
+构造器:
+空构造器：
+<bean name="bean1" class="cn.javass.spring.chapter2.HelloImpl2"/>  
+带参数构造器:
+<bean name="bean2" class="cn.javass.spring.chapter2.HelloImpl2">  
+<!-- 指定构造器参数 -->  
+     <constructor-arg index="0" value="Hello Spring!"/>  
+</bean>  
+
+静态工厂:
+public class HelloApiStaticFactory {  
+    //工厂方法  
+       public static HelloApi newInstance(String message) {  
+              //返回需要的Bean实例  
+           return new HelloImpl2(message);  
+}  
+}  
+配置
+<!-- 使用静态工厂方法 -->  
+<bean id="bean3" class="cn.javass.spring.chapter2.HelloApiStaticFactory" factory-method="newInstance">  
+     <constructor-arg index="0" value="Hello Spring!"/>  
+</bean>  
+
+动态工厂：
+package cn.javass.spring.chapter2;  
+public class HelloApiInstanceFactory {  
+public HelloApi newInstance(String message) {  
+          return new HelloImpl2(message);  
+   }  
+}  
+配置
+<!—1、定义实例工厂Bean -->  
+<bean id="beanInstanceFactory"  
+class="cn.javass.spring.chapter2.HelloApiInstanceFactory"/>  
+<!—2、使用实例工厂Bean创建Bean -->  
+<bean id="bean4"  
+factory-bean="beanInstanceFactory"  
+     factory-method="newInstance">  
+ <constructor-arg index="0" value="Hello Spring!"></constructor-arg>  
+</bean>  

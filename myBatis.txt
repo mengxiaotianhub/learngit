@@ -1,0 +1,137 @@
+ORM(Object/Relation Mapping)
+持久化类与数据库表之间的映射关系
+对持久化类的操作转化为对数据库表的操作
+数据库表的每一行转化为一个对象
+每一列都转化为对象的一个属性
+
+myBatis前身是apache基金会的iBatis开源项目
+支持自定义SQL、存储过程和高级映射的持久化框架
+使用xml或者注解配置
+能够映射基本数据元素、接口、java对象到数据库
+
+并不是直接建立JAVA对象到数据库表之间的映射关系，而是建立Java对像和SQL语句之间的映射关系。可以让使用者使用数据库的所有功能。
+
+MyBatis 的工作流程：
+加载XML文件，定义了后端数据库的地址以及，java类、方法与sql之间的对应关系
+应用程序调用API传入参数和SQL ID
+MyBatis自动生成SQL语句完成对数据库的访问，转换执行结果返回应用程序。
+
+环境配置，需要MyBatis和 Connector /j
+运行是基于一个SqlSessionFactory的实例，通过一个xml文件对其进行配置。
+在<transactionManager>中配置type="jdbc",另外一个参数是"manager"是指事务控制框架本身不做事情，交给例如SPEING来控制。
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="jdbc" />
+			<dataSource type="POOLED">
+				<property name="driver" value="com.mysql.jdbc.Driver" />
+				<property name="url" value="jdbc:mysql://localhost:3306/mybatis" />
+				<property name="username" value="root" />
+				<property name="password" value="872211" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="com/micro/profession/mybatis/UserMapper.xml" />
+	</mappers>
+</configuration>
+
+java类对象举例：
+public class User {
+	private int id;
+	private String userName;
+	private String crop;
+
+	public User(Integer id, String userName ,String crop){
+	this.id=id;
+	this.userName=userName;
+	this.crop=crop;
+	}
+	
+	public User( String userName ,String crop){
+		this.userName=userName;
+		this.crop=crop;
+		}
+
+	public int getId(){
+	return id;
+	}
+
+	public void setId(int id){
+	this.id=id;
+	}
+	
+	
+	public String getUserName(){
+		return userName;
+	}
+	
+	public void setUserName(String userName){
+		this.userName=userName;
+	}
+	
+	public String getCrop(){
+		return crop;
+	}
+	
+	public void setCrop(String crop){
+		this.crop=crop;
+	}
+}
+
+
+通过定义接口的方式定义对java类方法的SQL操作：
+public interface GetUserInfo {
+	public user getUser(int id);
+	public void addUser(User user);
+	public void updateUser(User user);
+	public void deleteUser(User user);
+}
+
+通过xml文件配置SQL的具体语句：
+<mapper namespace = "com.micro.profession.mybatis.GetUserInfo">
+<!-- 在select标签中编写查询的SQL语句，设置select标签的id属性为getUser，设置resultType="com.micro.profession.mybatis.User"就表示将查询结构封装为一个java类>
+<!-- 根据id查询得到一个user的对象>
+<select id = "getUser"  parameterType="int" resultType="com.micro.profession.mybatis.User">
+SELECT id,userName,corp FROM user WHERE id =#{id}
+</select>
+
+myBatis的优劣势：
+优势是使用简单，更加灵活自定义sql
+劣势是需要自己编写sql工作量大，可移植性差
+
+通过注解的方式配置SQL语句：
+在方法接口里面注解上sql语句就可以不用写mapper的xml文件了
+public interface GetUserInfoAnnotation{
+	@select("SELECT * FROM user WHERE id=#{id}")
+	public User getUser(int id);
+}
+同时在主程序里opensesion之前需要对Mapper的引用进行设置：
+Configuration conf = sessionFactory.getConfiguration();
+conf.addMapper(GetUserInfoAnnotation.class);
+
+增删查改的映射代码：
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace = "com.micro.profession.mybatis.UserInfo">
+<select id = "getUser"  parameterType="int" resultType="com.micro.profession.mybatis.User">
+SELECT id,userName,corp FROM user WHERE id =#{id}
+</select>
+<insert id = "addUser" parameterType = "com.micro.profession.mybatis.User"  useGeneratedKeys="true" keyProperty = "id">
+INSERT INTO user (userName,corp) VALUES (#{userName},#{corp})
+</insert>
+<update id = "updateUser" parameterType= "com.micro.profession.mybatis.User" >
+UPDATE user SET userName = #{userName},corp=#{corp} WHERE id = #{id}
+</update>
+<delete id = "deleteUser" parameterType="int">
+DELETE FROM user WHERE id=#{id}
+</delete>
+</mapper>
+
+
+在resultMap设置中，colum名需要和java类中构造函数的对应变量名一致
+
+
+
+配置连接池提高myBatis的性能

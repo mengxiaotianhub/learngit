@@ -21,7 +21,7 @@ JDBC链接数据库步骤：
 PreparedStatement的使用例子：
 PreparedStatement ptmt = conn.preparedStatement("SELECT userName FROM user WHERE sex=?;")
 ptmt.setFetchsize(10);
-ptmt.setString(1."男");
+ptmt.setString(1,"男");
 rs = ptmt.executeQuery();
 三、单袼中有非常大的数据，
 使用流方式划分区间读取，例子如下：
