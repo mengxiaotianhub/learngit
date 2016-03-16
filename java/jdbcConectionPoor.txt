@@ -1,0 +1,31 @@
+一般情况下一次conn = DriverManager.getConnection JDBC所执行的步骤有：
+1、客户端向数据库请求连接
+2、数据库向客户端发送随机密码种子
+3、客户端讲加密密码返回给数据库
+4、连接建立成功
+新建立连接步骤较多，时间耗费较高
+
+连接池中是已经连接好得连接，实际使用的时候是向连接池租用连接。连接池实际上是一个java架包，介于JDBC和数据库之间，实现了连接的创建，管理，销毁，限流。
+
+业界较为常用的是DBCP连接池，是apache基金会的产品，也是tomcat的连接池组件。
+DBCP分为三个java架包，commons-dbcp.jar,commons-pool,commons-logging;
+
+DBCP连接池在java程序中是用BasicDataSource类来表示的，
+
+ds = new BasicDataSource();
+ds.setUrl();
+ds.setDriverClassName();
+ds.setUsername();
+ds.setPassname();
+
+之后使用连接的时候conn = ds.getConnection();从ds获得的Connection中的close()方法被重写了，其close()是将Connection归还给连接池而不是销毁。
+
+连接池得高级设置，因为和tomcat使用了同一个连接池构建，所以高级参数是相似得：
+1、.setInitialSize();设置初始化连接池时已经创建好得连接数，一般设置为预期业务得平均返回量。
+2、.setMaxTotal();设置最大同时连接数，限流保护数据库得做用；
+3、.setMaxWaitMillis();设置最大排队时间；
+4、.setMaxIdle();空闲连接数大于此值的时候会销毁额外得连接，.setMinIdle();一最小空闲链接数，般推荐设置maxidle和minidle为同一值；
+用于定期检查得高级设置：例如MYSQL数据库会关闭空闲8小时得连接，但是连接池不知道就会造成连接池将失效得连接租借给应用程序，避免此情况就需要使用定期检查;
+5、.setTestWhileIdle(true);表示开启定期检查功能
+6、.setMinEvictableIdleTimeMillis();表示销毁连接的最小空闲时间。一般小于数据库关闭空闲连接的时间。
+7、.setTimeBetweenEvictionRunsMillis();检查运行时间的间隔。

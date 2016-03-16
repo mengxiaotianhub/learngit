@@ -1,0 +1,10 @@
+请求转发：将当前request和response交给指定的web组件处理。使用函数为forward
+对于浏览器来说：url不会变，只会知道一次请求和一次响应。
+RequestDispatcher:用来做转发的对象，其下有forward和incloud两种方法。可以通过HttpServletRequest和servletContext中获取。
+
+通过HttpServletRequest获取:RequestDispatcher rd = req.getRequestDispatcher("转发对象的绝对或者相对路径");
+通过servletContext获取：rd = this.getServletContext().getNamedDispatcher("转发对象的servlet名称");
+						rd = this.getServletContext().getRequestDispatcher("转发对象的绝对路径");
+
+重定向：通过reponse对象发送给浏览器一个新的url地址，让其重新请求。通过sendRedirect对象实现。两次请求两次响应，第二次为浏览器自动发送。
+通过HttpServletResponse重定向: resp.sendRedirect("redirectExample");

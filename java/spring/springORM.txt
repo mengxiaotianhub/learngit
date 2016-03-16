@@ -1,0 +1,82 @@
+DAO: Data Access Object 数据访问相关接口   可以分离业务对象和实现对象
+ORM: Object Relation Mapping
+
+数据访问的一般步骤：
+连接参数设置
+打开链接
+声明sql语句及参数
+执行sql语句并循环访问结果
+执行业务
+处理异常
+关闭链接，语句以及结果集
+
+在spring里面是通过一个DataSource类来进行参数设置的：
+DataSource有唯一一个接口就是getConnection
+
+使用spring里面的数据连接相关组件是通过配置bean的方式进行的：
+具体配置如下
+<bean id = "dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+<property name="driverclassname" value="${jdbc.driverclassname}">
+<property name="url"value="#{jdbc.url}">
+<property name="username" value="#{jdbc.username}">
+<property name="password" value="#{jdbc.password}">
+</bean>
+<context:property-placeholder location="db.properties">
+其中最后一句的本地属性文件配置是简易版的一般来说相当于：
+<bean id="headerProperties" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+<properties name="location" value="classpath:db.properties">
+</bean.
+
+在spring当中声明SQL语句，执行SQL语句以及处理和异常处理都封装在一个jdbcTemplate的类里面
+使用jdbcTemplate进行sql语句查询的三种示例：
+int rowCount=this.jdbcTemplate.queryForObject("select count(*) from user",Integer.class)
+int countOfNamedJoe=this.jdbcTemplate.queryForObject("select count(*) from user where first_name = ?",Integer.class,"Joe")
+String lastName=this.jdbcTemplate.queryForObject("select lastName from user where id=?",new Object[]{1212L},String.calss)
+插入，更新，删除都是用.updata方法，例如：
+this.jdbcTemplate.updata("insert into user (first_name,last_name) value (?,?)"，"meng","han")
+this.jdbcTemplate.updata("updata user set last_name = ? where id = ?","li","5276L")
+this.jdbcTemplate.updata("detele from user where id = ?" ,Long.valueof(userId))
+创建表使用.execute方法
+
+将查询结果封装为一个类：
+User user = this.jdbcTemplate.queryForObject(
+"select first_name,last_name from user where id = ?",new Object[]{1212L},
+new RowMapper<User>(){																											
+public User mapRow(ResultSet rs,int rowNum) throws SQLException{
+User user = new User();
+user.setFirstName(rs.getString("first_name"));
+user.setLastNmae(rs.getString("last_name"));
+return user;
+}
+})
+
+创建一个jdbcTemplate类：
+public class JdbcExampleDao implements ExampleDao{
+	private JdbcTemplate jt;
+	public void setDataSource(DataSource dataSource){
+		this.jt=new JdbcTemplate(dataSource)
+	}
+}
+对应的bean设置:
+<bean id= "exampleDao" class="...JdbcExampleDao">
+<property name="dataSource" ref="dataSource">
+</bean>
+对应的annotation设置：
+类级别@Repository  方法级别:@Autowired
+
+
+可使用命名参数的JdbcTemplate:其类名是NamedParameterJdbcTemplate，作为JdbcTemplate的子类，其new的过程相似，使用方法有差别如：
+public int count(){
+	String sql = "select count(*) from user where first_name=:first_name"//参数是使用参数名称前加:的方式来进行标记
+	Map<String,String> map=Collection.singletonMap("first_name","xiaoming");
+	return this.npjt.queryForObject(sql,map,Integer.class);
+}
+}
+以上这个类还有一个种接口是this.npjt.queryForObject(sql,SqlParameterSource paramSource,Integer.class);
+其中SqlParameterSource这个类可以由我们自己实现，spring已经有了两个简单实现
+第一个是MapSqlParameterSource，就是一种类似于map的机制
+第二种是BeanPropertySqlParameterSource这个类可以传入一个java对象，将其中的属性提取出来作为参数使用
+只要将对应的对象传入到这个类里面就可以了BeanPropertySqlParameterSource bpsq= new BeanPropertySqlParameterSource(user);
+
+异常处理：
+spring将原本java里的SQLException变成了DataAccessException 将其从checked变成了unchecked类型的，好处就是不用在每一处都进行异常处理，只在自己想要处理的地方进行处理

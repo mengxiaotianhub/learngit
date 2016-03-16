@@ -1,0 +1,93 @@
+AOP术语：
+Aspect:日志安全能功能也就是切面;
+ Join point:函数执行或者属性访问;
+ Advice:在某个函数执行点上要执行的切面功能;
+ Pointcut:匹配横切目标函数的表达式;
+
+ 定义一个aop操作主要就是定义 Aspect Advice Pointcut三个点 
+ Advice类型:
+ Before:函数执行之前;
+ After returning:函数正常返回以后;
+ After throwing:函数出错以后;
+ After finally:函数返回以后，不管是否出错;
+ Around:函数执行前后;
+
+ spring AOP 并不是完整的aop实现，只是为了整合ioc 和 aop 的功能，更完整的aop功能 可以去了解 AspectJ框架
+
+ Spring AOP主要通过两个方式来进行实现:
+ @AspectJ annotation-based AOP
+ XML schema-based AOP
+
+ 使用@AspectJ annotation-based AOP的方式：
+ 需要添加aspectjweaver.jar的依赖包
+
+需要在配置文件里面添加
+ <beans  
+xmlns="http://www.springframework.org/schema/beans"  
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+xmlns:aop="http://www.springframework.org/schema/aop"  
+xsi:schemaLocation="  
+http://www.springframework.org/schema/beans        
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+ http://www.springframework.org/schema/aop
+ http://www.springframework. org/schema/aop/spring-aop-2.0.xsd">  
+ <aop:aspectj-autoproxy/>
+ </beans>
+
+需要添加一个bean  <bean id="loggingAspect" class="learn.LoggingAspect">
+
+需要在类级别上加上Annotation:  @Aspect  表明这个类为Aspect类
+
+在函数级别上可以添加@Pointcut("execute(* com.netease.Test.(..))")这样的Annotation来定义一个pointcut表达式，同时这个annotation所在的函数的名称也可以称为这个pointcut的名称
+pointcut表达式的一般规定：  designator (modifiers? return-type declaring-type? name(param) throw?)  
+如果一个新的pointcut范围是其他两个pointcut范围的交集可以这样表达 designator(函数1名字 && 函数2的名字)
+
+Adivce的定义，需要在函数级别加上annotation   @before("pintcut表达式或者pintcut表达式的名称")
+在函数体里面定义Adivce要做的事情，而在一般情况下 我们需要拿到业务逻辑里的一些上下文信息进行处理：
+@Before(..)
+public vioid doLog(JoinPoint jp){
+	//通过JoinPoint的类来获得上下文信息
+}
+而特殊的如@Around中是用的JoinPoint的一个子类ProceedingJoinPoint来完成的，因为这个Adeivce存在执行某操作后让原函数运行的问题例如：
+public void doLog(ProceedingJoinPoint pjp){
+	sysout(..);
+	Object retVal = pjp.proceed();
+	sysout(..);
+	return retVal
+}
+拿到返回值:
+@After(pointcut="" returning="retVal")
+public void doLog(Object retVal){}//通过retVal就可以拿到返回值了
+拿到异常：
+@AfterThrowing(pointcut="" throwing="ex")
+public void doLog(IllegalArgumentException ex){}
+拿到参数：
+@Befroe(".....  && agrs(a,..)")
+public void doLog(JoinPoint jp,int a){}
+
+使用Schema-based AOP的方式：
+<beans  
+xmlns="http://www.springframework.org/schema/beans"  
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+xmlns:aop="http://www.springframework.org/schema/aop"  
+xsi:schemaLocation="  
+http://www.springframework.org/schema/beans        
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+ http://www.springframework.org/schema/aop
+ http://www.springframework. org/schema/aop/spring-aop-2.0.xsd">  
+ </beans>//注意这里没有<aop:aspectj-autoproxy/>
+
+ 定义Aspect：
+ <aop:config>
+ <aop:aspect id="loggingAspect" ref="loggingBean"/>
+ </aop:config>
+
+ <bean id="loggingBean" calss="com.mengxiaotian.learn.spring.LoggingAspect">
+
+ 定义Piontcut,advice:
+ <aop:config>
+ <aop:aspect id="loggingAspect" ref="loggingBean">
+ <aop:pointcut id="arithmetic" expression=".."/>
+ <aop:before pointcut-ref="arithmetic" method="doLog">
+ </aop:aspect>
+ </aop:config>

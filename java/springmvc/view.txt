@@ -1,0 +1,43 @@
+ViewResolver，可以将返回的内容转换为对应的文件和模板
+其有三个实现:
+
+
+InternalResourceViewResolver:展示jsp之类的返回，处理jsp和servlet的需求，基本配置：
+<bean id = "ViewResolver" class="org.springframework.servlet.view.InternalResourceViewResolver">
+<property name="prefix" value="/WEB-INF/jsp/"/>
+<property name="suffix" value=".jsp"/>
+</bean>
+
+
+FreeMarkerViewResolver:类似于jsp在模版文件中插入java代码,针对对象就是freemarker这个模板引擎，基本配置:
+<bean id = "freemarkerConfig" class="org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer">
+<property name="templateLoaderPath" value="/WEB-INF/freemarker/"/>
+</bean>
+<bean id = "ViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+<property name="cache" value="true"/>//设置为true可以记录每次查找的结果，提高下次查找的效率
+<property name="prefix" value=""/>
+<property name="suffix" value=".ftl"/>
+</bean>
+
+
+ContentNegotiatingViewResolver:内容协商，可以返回不同的展示，是ViewResolver的一个组合，
+可以根据请求中不同的扩展名来判断返回不用的模板数据，比如：user.json,user.html,user.pdf等
+也可以通过Accept头中的media types来判断：application/xml,application/json等，基本配置：
+<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+<property name = "ViewResolvers">
+	<list>
+		<bean id = "ViewResolver" class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
+		<property name="cache" value="true"/>
+		<property name="prefix" value=""/>
+		<property name="suffix" value=".ftl"/>
+		</bean>
+	</list>
+</property>
+<property name="defaultViews">//当设定的VierResolver都没有匹配上的时候从默认中选择模板
+	<list>
+	<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView"/>
+	</list>
+</property>
+</bean>
+
+当返回的信息只有模型信息而没有域名称信息的时候，spring会通过DefaultRequestToViewNameTranslator来从请求url中解析出对应的域名

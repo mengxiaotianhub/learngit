@@ -1,0 +1,21 @@
+事物：是并发控制的基本单元，指作为单个逻辑单元执行一系列的操作。
+
+开始事务控制：在Connection对象上,.setAutoCommit(false);.Commit提交事务;.rollback回滚。
+
+死锁的必要条件：
+互斥:指对同一行信息修改完成之前必须持锁
+请求和保持：发生在两个或者两个以上事物的情况下，互相等待。
+不剥夺：持有锁在事务没有完成以前不可以被剥夺。
+环路等待：出现死锁时必然出现一个事务和锁之间的等待环。
+
+四种事物隔离等级：read uncommitted,可以脏读。read committed,可以读取。repeatable read，可以重复读。serializable串行化。
+
+MYSQL中有两种锁：排它锁和共享锁。
+加锁方式：外部加锁和内部加锁。
+
+SELECT * FROM table lock in share mode 加共享锁
+SELECT * FROM table for update 加排它锁
+
+InnoDB引擎中的数据是默认不加锁的
+
+MYSQL数据库会自动解除死锁，show engine innodb status可以查看到死锁的解除过程，用以调整程序 不再发生死锁。

@@ -1,0 +1,54 @@
+Java 一般的输出输入流就是intputstream和outputstream这两个类的继承类。
+
+java的官方文档http://docs.oracle.com/javase/8/docs/api/overview-summary.html
+
+intputstream是把外面的输入当作字节来看待，一次读入一个或者一些字节。
+
+输入流演示
+public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		System.out.println("come on!");
+		byte[] buffer = new byte[1024];
+		try {
+			int len = System.in.read(buffer);
+			String s =new String(buffer,0,len);
+			System.out.println("read"+len+"byte");
+			System.out.println(s);
+			System.out.println("slen is "+s.length());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+文件流：FileOutputStream 和 FileInputStream
+
+输出文件流示例：
+public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		byte[] buffter = new byte[10];
+		for(int i =0;i<buffter.length;i++){
+			buffter[i]=(byte) i;
+		}
+		try {
+			FileOutputStream out = new FileOutputStream("a.dat");
+			out.write(buffter);
+			out.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+可以写入基本数据类型的输出过滤器流组合DataOutputStream out =new DataOutputStream (new BufferedOutputStream(new FileOutputStream("a.dat")));
+输入流DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream("a.dat")));
+
+文本的输入和输出使用Reader和Writer机制  一般的类为PrintWriter，如果文件编码为UNICO的就可以直接使用这个类，一般情况下都是其他形式的编码所以需要借助流来做输入输出
+例如:输出
+PrintWriter out =new PrintWriter (new BufferedWriter(new OutputStreamWriter(new FileOutputStream("a.dat"))));
+输入：
+BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("a.txt")));
+特殊的 FileReader是一个InputStreamReader的子类可以直接读取指定路径或者File类型的文件，但是缺点是不能指定编码形式只能使用编译环境的默认设置。
+如果需要指定编码形式需要在InputStreamReader()中指定例如BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream("a.txt"),"utf-8"));

@@ -1,0 +1,42 @@
+Controller的自动发现语句:<context:component-scan base-package="">
+
+RequestMapping:
+name:名称
+value & path:路径,如"/hello"
+method:请求方法,如"GET"
+params:请求参数
+headers：请求头
+consumes:请求的媒体类型，对应的是http中的"Context-Type"
+produces:响应媒体的类型，对应http中的"Accept"
+
+利用RequestMapping实现对url变量的读取
+@RequestMapping(path = "..../user/{userId}")
+public String method(@PathVariable("UserId") String userId){
+	
+}
+
+一般函数中可以注入的参数:
+HttpServletResponse/HttpServletRequest,HttpSession
+@Reader/Writer
+@PathVariable
+@RequestParam
+@RequestHeader
+HttpEntity
+@RequestBody
+Map/Model/ModelMap
+@ModelAttribute 可以通过定义好的类，将表单里的多条内容注入这个类里面以实现多条表单的注入
+
+返回类型:
+void
+String 一般是返回的view名称,可以通过@@ResponseBody来指定返回的就是String的实际内容，也可以返回类对象，不过要通过MessageConverter转换Object和RequestBody之间。需要在xml里面加上<mvc:annotation-driven/> 来打开MessageConverter
+HttpEntity
+view
+Map
+Model
+ModelAndView
+
+文件上传的实现：
+首先定义一个bean:
+<bean id = "multipartResolver" class="org.springframework.web.multipart.commons.commons.MultipartResolver">
+<property name="maxUploadSize" value="100000"/>
+</bean>

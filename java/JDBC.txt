@@ -1,0 +1,46 @@
+与数据库的连接工具：
+Workbench:图形化交互
+Client Side:命令行
+JDBC:java程序和MYSQL链接的工具
+
+
+JDBC链接数据库步骤：
+1、class.forname()  注册一个驱动名称给DriverManager
+2、conn = DriverManager.getConnection(DB_URL,USER,PASS);  DB_URL(以MYSQL为例):jdbc:mysql://localhost:3306/cloud_study;
+3、stat = conn.createStatement();
+4、ResultSet = stmt.excuteQuery("select userName from user");ResultSet是一个集合，可以执行的方法有，.next()指针指向下一行,.previous()指针指向上一行,.absolute()指针指向指定序号行,.beforeFirst,指针指向第一行以前.afterLast()指针指向最后一行以后;.getString(ColumnName/index),.getInt(c/i),.getObject(c/i),一般推荐使用列名作为定位。
+5、最后记得使用.close释放资源，同时释放资源的时候记得放在finally字段中，用if判断是否为空指针后再释放。
+
+业务场景举例，
+一、过滤条件很弱导致获得记录过多
+二、读取数据库中的所有记录
+在数据量过多的时候容易导致内存溢出错误，可以使用游标解决，游标就是解决客户端批次读取数据的工具。
+使用游标的步骤
+1、在DB_URL中加入参数值：jdbc:mysql://localhost.3306/cloud_studuy?useCursorFetch=true
+在使用游标的过程中是使用PreparedStatement接口，其继承自Statement，可以用来替换Statement
+PreparedStatement的使用例子：
+PreparedStatement ptmt = conn.preparedStatement("SELECT userName FROM user WHERE sex=?;")
+ptmt.setFetchsize(10);
+ptmt.setString(1,"男");
+rs = ptmt.executeQuery();
+三、单袼中有非常大的数据，
+使用流方式划分区间读取，例子如下：
+当使用以上方式获取到rs的之后：
+IuputStream in = rs.getBinaryStream("blog");
+File f = new File(FILE_URL);
+OutStream out = null;
+out = new FileOutputStream(f);
+int temp = 0;
+while ((temp= in.read()) !=-1){out.write(temp)};
+in.close;
+out.close;
+四、大量数据录入操作
+批处理：一次发送sql执行多次处理，使用例子：
+stmt.addBatch(sql);
+stmt.executeBatch();
+stmt.clearBatch();
+五、涉及到中文的时候的字符集不同时会出现乱码：
+在数据库当中执行： SHOW VARIABLES LIKE "%character%"可以得到数据库的编码集，
+SHOW CREATE TABLE user 可以查看表级别的编码
+编码级别的优先级： column>table>Database>Server
+设置JDBC的编码是在DB_URL当中增加一个参数：characterEncoding=utf8;

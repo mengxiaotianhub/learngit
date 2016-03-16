@@ -1,0 +1,51 @@
+spring是一种轻量级的一站式开发框架 
+
+轻量级是相对于旧版本java ee里面的开发框架
+一站式是指集成了许多工具
+
+核心技术： ioc控制反转   AOP面向切面编程
+
+IOC；
+控制什么？控制对象之间的依赖，Dependency Injection(DI依赖注入);从形式上讲IOC和DI是一样的，从实际概念上讲是有区别的DI我们要达成的目标，IOC是实现这个目标的方式。
+谁来控制？IOC以前是由对象的提供者提供控制，IOC场景下DI的过程交给了IOC的容器，通过配置文件达到目的。
+
+AOC：
+就是把业务逻辑和非业务逻辑分离，等到运行的时候再组合起来的方式
+Aspect-Oriented Programming  中的Aspect可以是日志部分，安全部分，事务相关都可以作为一个切面。
+
+Spring架构：
+test->ioc核心容器->aop容器->数据和web服务
+
+ioc部分是对象创建，装配，生命周期管理和上下文环境
+AOC部分AOP实现，AspectJ支持
+数据访问提供jdbc支持，事务管理ORM整合
+web框架提供Servlet Based MVC支持，web工具支持，模版支持
+
+Spring包含很多个项目，spring框架只是其中一个项目
+
+
+IOC容器：一个ApplicationCoutext就是一个IOC容器 属于org.springframework.comtext下的spring-context模块
+初始化：web应用中可以在web.xml中配置一个参数来初始化IOC容器 ：
+<context-param>
+	<param-name>contextConfigLocation</param-name>
+	<param-value>calsspath:"application-caontext.xml"</param-value>
+</context-param>
+在非web场景下的初始化方法：
+ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
+或者
+ApplicationContext context = new FileSystemXmlApplicationContext("/home/user/conf/application-context.xml");
+
+初始化实例，通过在application_context.xml中添加bean标签来实现的:
+<bean id="user" class="com.myspring.User"></bean>
+获取bean：
+ApplicationContext context = new ClassPathXmlApplicationContext("application-context.xml");
+User user = context.getBean("user",User.calss);
+
+xml的依赖添加:
+<dependencies>
+	<dependency>
+ 	 <groupId>org.springframework</groupId>
+ 	 <artifactId>spring-context</artifactId>
+ 	 <version>4.2.4.RELEASE</version>
+	</dependency>
+</dependencies>

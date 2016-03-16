@@ -1,0 +1,32 @@
+git init : 在当前目录建立本地仓库
+git add <file>:将目标文件添加到暂存区 git add . :添加所有当前目录的文件
+git commit -m "memo" :将暂存区文件提交到本地仓库，memo为附加信息
+git status :查看仓库当前状态
+git diff :查看文件修改的内容
+git log :查看提交历史
+git log --pretty=oneline :简略提交历史
+git reset --hard HEAD^ :退回到上一个版本
+git reset --hard commit_id :退回到指定ID的版本
+git reflog :查看执行过的每一条命令
+git checkout -- <file> ：撤销文件在工作区的修改，并回到最近的一次add或者commit的状态。修改意味着删除和增加两种状态，换句话说这个命令可以用来撤销你增加的东西，也可以恢复你误删的文件
+git reset HEAD file : 把暂存区的修改撤销
+git rm <file> :删除工作区的文件，并没有删除实体文件，可以理解为取消追踪。
+ssh-keygen -t rsa -C "youremail@example.com" ：用户主目录下创建SSH Key
+git remote add origin git@github.com:yourusername/reposiyoryname.git：将当前目录的仓库和hub上的远程仓库关联
+git clone git@github.com:yourusername/reposiyoryname.git：从远程库拉取一个仓库
+git push -u origin master :首次将master分支的内容推送到远程库。-u参数是当远程库没有此仓库的时候新建一个同名的远程库和此仓库关联。
+git push origin master :非首次推送
+hub：在使用ssh链接远程库的时候出现“Host key verification failed.”错误，一般情况是第一次连接的时候许可没有输入yes，直接回车导致的。
+hub:使用git config --local -e命令可以打开配置信息。
+git checkout -b "branchname":相当于git branch "branchname" 和 git checkout "branchname"，用于创建一个分支并切换到此分支
+git branch :查看当前所有分支
+git merge "branchname":将指定分支合并到当前分支
+git branch -d <name>:删除指定的分支，删除未合并的分支会报错，需要再次输入命令并将d改为大写D
+git log --graph --pretty=oneline --abbrev-commit :查看分支合并历史
+git stash :保存并清理当前工作区
+git stash list :查看所有保存的工作区信息
+git stash pop :相当于git stash apply恢复工作区，git stash drop删除保存的工作区的集合体
+git stash apply stash@{<index>}:恢复指定序号的已stash工作区
+git remote -v:查看远程库信息
+
+Permission denied (publickey)错误：在蜂巢使用git clone命令拉取github中的远程仓库时，有的时候会出现这个错误。原因是你的蜂巢~/.ssh下没有生成自己的ssh密钥，使用ssh-keygen -t rsa -C "your@your"生成一个ssh密钥对就可以正常clone了，""里面填你自己的常用邮箱就可以。如果你想要push蜂巢上的git仓库修改到guihub远程库就必须把这个ssh密钥中的公钥添加到github的ssh管理中。
