@@ -1,0 +1,49 @@
+freemarker分为模板和数据模型
+
+数据模型中，的分支节点称为hashes，可以有自变量或者子元素
+最底层的称为scalars
+
+模版中一般有四种元素。文本，注释，指令和插值表达式
+指令：
+分为开始标签<#directivename parameters>
+结束标签:</#directivename>
+<body>
+<h1>
+</h1>
+</body>
+
+if指令：
+<body>
+<h1>
+welecome ${user}<#if user == "big joe">,our beloved leader</#if>
+</h1>
+</body>
+也可以有else 或者elseif
+
+list指令：类似于FOR循环遍历一个集合中的每个元素:
+<p>we have these aninals:
+<table border=1>
+<#list animals as animal>
+<tr><td>${animal.name}<td>${animal.price} Euros
+</#list>
+</table>
+相当于：
+<p>we have these aninals:
+<table border=1>
+<tr><td>mouse<td>20 Euros
+<tr><td>elephant<td>50 	Euros
+<tr><td>python<td>42 Euros
+</table>
+
+include指令:通过引用某个预先写好的模版，将其添加到每一个需要这个模板的地方
+<#include "/copyright_footer.html">
+
+在非spring的框架下单独使用freemarker:
+配置：
+Configuration cfg = new Configuration(Configuration.VERSION_2_3_22);
+cfg.setDirectoryForTemplateLoading(new File("/where/you/template"));
+cfg.setDefaultEncoding("UTF-8");
+cfg.setTemplateExceptionHander(TemplateExceptionHander.RETHROW_HANDER);
+
+定义模板，
+定义数据模型
